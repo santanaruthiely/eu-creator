@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><script src="https://myhub.ia.br/canvas-vendor/tailwind.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Central de Gestão</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f7f6f2; color: #1e293b; min-height: 100vh; }
+.header { background: #fff; padding: 16px; border-bottom: 1px solid #e2e8f0; }
+.header h1 { font-size: 20px; font-weight: 600; }
+.header p { font-size: 13px; color: #64748b; margin-top: 2px; }
+.header-right { font-size: 13px; color: #64748b; margin-top: 4px; }
+.nav { display: flex; overflow-x: auto; gap: 8px; padding: 12px; background: #fff; border-bottom: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; }
+.nav button { flex-shrink: 0; padding: 10px 16px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.nav button.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.nav button.amber { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.nav button.amber.active { background: #92400e; color: #fff; }
+.nav button.rose { background: #ffe4e6; color: #9f1239; border-color: #fecdd3; }
+.nav button.rose.active { background: #9f1239; color: #fff; }
+.nav button.indigo { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
+.nav button.indigo.active { background: #3730a3; color: #fff; }
+.nav button.violet { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
+.nav button.violet.active { background: #5b21b6; color: #fff; }
+.nav button.sky { background: #e0f2fe; color: #075985; border-color: #bae6fd; }
+.nav button.sky.active { background: #075985; color: #fff; }
+.main { padding: 16px; padding-bottom: 80px; }
+.card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.card.amber-bg { background: linear-gradient(135deg, #fffbeb, #ffedd5); border-color: #fde68a; }
+.card.rose-bg { background: #fff1f2; border-color: #fecdd3; }
+.card.emerald-bg { background: #ecfdf5; border-color: #a7f3d0; }
+.card.sky-bg { background: #f0f9ff; border-color: #bae6fd; }
+.card.indigo-bg { background: #eef2ff; border-color: #c7d2fe; }
+.card-title { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 12px; }
+.card-title-lg { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.rotina-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 8px; }
+.rotina-item.protegido { border-color: #fecdd3; background: #fff1f2; }
+.rotina-hora { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.rotina-info { flex: 1; min-width: 0; }
+.rotina-info h4 { font-size: 14px; font-weight: 500; }
+.rotina-info p { font-size: 13px; color: #64748b; margin-top: 2px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+.badge-rose { background: #ffe4e6; color: #9f1239; }
+.badge-emerald { background: #d1fae5; color: #065f46; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-indigo { background: #e0e7ff; color: #3730a3; }
+.badge-slate { background: #f1f5f9; color: #475569; }
+.badge-violet { background: #ede9fe; color: #5b21b6; }
+.btn { padding: 8px 16px; border-radius: 10px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
+.btn:active { opacity: 0.7; }
+.btn-primary { background: #1e293b; color: #fff; }
+.btn-amber { background: #d97706; color: #fff; }
+.btn-emerald { background: #059669; color: #fff; }
+.btn-indigo { background: #4f46e5; color: #fff; }
+.btn-violet { background: #7c3aed; color: #fff; }
+.btn-rose { background: #e11d48; color: #fff; }
+.btn-sky { background: #0284c7; color: #fff; }
+.btn-outline { background: #fff; color: #475569; border: 1px solid #e2e8f0; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; outline: none; background: #fff; }
+.input:focus { border-color: #4f46e5; }
+.select { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; outline: none; background: #fff; }
+.textarea { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; outline: none; background: #fff; resize: vertical; min-height: 80px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 4px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; }
+.chip.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+.chip.amber.active { background: #d97706; border-color: #d97706; }
+.chip.rose.active { background: #e11d48; border-color: #e11d48; }
+.chip.sky.active { background: #0284c7; border-color: #0284c7; }
+.chip.indigo.active { background: #4f46e5; border-color: #4f46e5; }
+.chip.violet.active { background: #7c3aed; border-color: #7c3aed; }
+.canal-card { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; cursor: pointer; transition: box-shadow 0.2s; }
+.canal-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.canal-avatar { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
+.canal-info { flex: 1; min-width: 0; }
+.canal-info h3 { font-size: 16px; font-weight: 600; }
+.canal-info p { font-size: 13px; color: #64748b; font-style: italic; margin-top: 2px; }
+.canal-info .plataformas { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.canal-info .idioma { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+.projeto-card { padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; }
+.projeto-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.progress-bar { height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 8px 0; }
+.progress-fill { height: 100%; border-radius: 999px; transition: width 0.3s; }
+.ideia-card { padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; }
+.ideia-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.email-card { padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; }
+.email-card.unread { border-color: #fecdd3; }
+.email-header { display: flex; align-items: center; gap: 12px; }
+.email-avatar { width: 40px; height: 40px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.email-content { flex: 1; min-width: 0; }
+.email-content .de { font-weight: 600; font-size: 14px; }
+.email-content .assunto { font-size: 14px; font-weight: 500; margin-top: 2px; }
+.email-content .resumo { font-size: 13px; color: #64748b; margin-top: 4px; }
+.email-data { font-size: 12px; color: #94a3b8; flex-shrink: 0; }
+.link-card { display: block; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; text-decoration: none; color: inherit; transition: box-shadow 0.2s; }
+.link-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.link-card h4 { font-size: 14px; font-weight: 600; }
+.link-card p { font-size: 13px; color: #64748b; margin-top: 4px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+.modal { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; padding: 20px; transform: translateY(100%); transition: transform 0.3s; }
+.modal-overlay.show .modal { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.modal-header h3 { font-size: 18px; font-weight: 600; }
+.modal-close { width: 32px; height: 32px; border-radius: 999px; border: none; background: #f1f5f9; font-size: 16px; cursor: pointer; }
+.foto-upload { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.foto-preview { width: 64px; height: 64px; border-radius: 16px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; overflow: hidden; background-size: cover; background-position: center; flex-shrink: 0; }
+.foto-actions { display: flex; flex-direction: column; gap: 4px; }
+.foto-actions .btn { font-size: 12px; padding: 6px 12px; }
+.hidden-input { display: none; }
+.actions-row { display: flex; gap: 6px; flex-shrink: 0; }
+.agenda-item { padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 12px; }
+.agenda-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.agenda-datas { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #64748b; margin-top: 4px; }
+.tarefa-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 8px; }
+.tarefa-check { width: 24px; height: 24px; border-radius: 999px; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.tarefa-check.done { background: #10b981; border-color: #10b981; color: #fff; }
+.tarefa-text { flex: 1; font-size: 14px; }
+.tarefa-text.done { text-decoration: line-through; color: #94a3b8; }
+.tarefa-prazo { font-size: 12px; color: #94a3b8; }
+.disponibilidade-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 12px; border: 1px solid #a7f3d0; background: #fff; margin-bottom: 8px; }
+.disponibilidade-item p { font-size: 14px; font-weight: 500; }
+.disponibilidade-item span { font-size: 12px; color: #64748b; }
+.disponibilidade-item .duracao { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.regra-list { list-style: disc; padding-left: 20px; font-size: 14px; color: #475569; }
+.regra-list li { margin-bottom: 4px; }
+.estrutura-item { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 8px; }
+.estrutura-tempo { padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.fonte-chip { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #fff; border: 1px solid #c7d2fe; color: #3730a3; margin: 2px; }
+.mesclar { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; margin-bottom: 8px; }
+.mesclar-info p { font-size: 14px; font-weight: 500; }
+.mesclar-info span { font-size: 12px; color: #94a3b8; }
+.mesclar-dias { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.section-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.section-subtitle { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 12px; }
+.text-muted { color: #64748b; }
+.text-italic { font-style: italic; }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (min-width: 768px) {
+  .nav { overflow-x: visible; flex-wrap: wrap; }
+  .grid-2 { grid-template-columns: 1fr 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ============ ESTADO ============
+const STORAGE_KEY = 'central_gestao_ruthiely';
+
+const defaultState = {
+  rotinaItens: [
+    { id: 1, hora: '07:00', atividade: 'Início do dia', detalhes: 'Higiene pessoal, orações da manhã, leitura diária da Torá', protegido: false, fixo: true },
+    { id: 2, hora: '08:30', atividade: 'Café da manhã em família', detalhes: 'Também pode ser usado para publicar conteúdos prontos', protegido: false, fixo: true },
+    { id: 3, hora: '09:00–11:30', atividade: 'Homeschooling Cecília', detalhes: 'Atenção, cuidados e educação — bloco protegido e prioritário', protegido: true, fixo: true },
+    { id: 4, hora: '11:30–12:30', atividade: 'Trabalho', detalhes: 'Bloco da manhã', protegido: false, fixo: true },
+    { id: 5, hora: '12:30–13:30', atividade: 'Almoço', detalhes: 'Pausa para refeição', protegido: false, fixo: true },
+    { id: 6, hora: '13:30–16:30', atividade: 'Trabalho', detalhes: 'Principal bloco de produtividade — incluir intervalos de descanso', protegido: false, fixo: true },
+    { id: 7, hora: '17:00', atividade: 'Cuidados da casa e jantar', detalhes: 'Sexta-feira: iniciar às 16:00', protegido: false, fixo: true },
+    { id: 8, hora: '19:30–20:00', atividade: 'Jantar', detalhes: 'Refeição em família', protegido: false, fixo: true },
+    { id: 9, hora: '20:00–21:30', atividade: 'Tempo pessoal e familiar', detalhes: 'Organização do dia seguinte ou atividades leves', protegido: false, fixo: true },
+    { id: 10, hora: '21:30–22:00', atividade: 'Desaceleração', detalhes: 'Preparação para dormir', protegido: false, fixo: true },
+    { id: 11, hora: '22:00', atividade: 'Horário de dormir', detalhes: 'Descanso', protegido: true, fixo: true },
+  ],
+  atividadesAdicionais: [
+    { id: 1, nome: 'Calistenia', horario: 'Flexível', dia: 'Segunda a sexta', fixo: false },
+    { id: 2, nome: 'Tarefas domésticas', horario: 'Variável', dia: 'Conforme necessidade', fixo: false },
+    { id: 3, nome: 'Compromissos familiares', horario: 'Variável', dia: 'Conforme agenda', fixo: false },
+    { id: 4, nome: 'Organização pessoal', horario: 'Variável', dia: 'Conforme necessidade', fixo: false },
+    { id: 5, nome: 'Planejamento semanal', horario: 'Variável', dia: 'Domingo sugerido', fixo: false },
+  ],
+  tarefasPrioritarias: [
+    { id: 1, texto: 'Finalizar roteiro do tutorial da gola', prazo: 'Hoje', status: 'pendente' },
+    { id: 2, texto: 'Revisar thumbnail do vídeo #13', prazo: 'Amanhã', status: 'pendente' },
+    { id: 3, texto: 'Responder e-mails de collab', prazo: 'Hoje', status: 'concluida' },
+  ],
+  proximosPrazos: [
+    { id: 1, titulo: 'Publicação — Tutorial gola completa', data: '2026-11-16', diasRestantes: 4 },
+    { id: 2, titulo: 'Entrega — Collab Fit & Food', data: '2026-11-14', diasRestantes: 2 },
+    { id: 3, titulo: 'Lançamento curso online', data: '2026-11-25', diasRestantes: 13 },
+  ],
+  publicacoesProgramadas: [
+    { id: 1, titulo: 'Short — 3 erros na gola de crochet', canal: "Sant'Ara", data: '2026-11-12', horario: '08:30' },
+    { id: 2, titulo: 'Vídeo longo — Mente em Contraste #13', canal: 'Mente em Contraste', data: '2026-11-18', horario: '18:00' },
+  ],
+  agendaItens: [
+    { id: 1, canal: 'Mente em Contraste', plataforma: 'youtube', conteudo: 'Mente em Contraste #13', dataProducao: '2026-11-13', dataPublicacao: '2026-11-18', status: 'agendada' },
+    { id: 2, canal: "Sant'Ara", plataforma: 'youtube', conteudo: 'Tutorial — gola cachecol completa', dataProducao: '2026-11-12', dataPublicacao: '2026-11-16', status: 'em produção' },
+    { id: 3, canal: 'Pela Suíça 🇨🇭', plataforma: 'tiktok', conteudo: 'Um dia em Zurique no inverno', dataProducao: '2026-11-12', dataPublicacao: '2026-11-14', status: 'pendente' },
+    { id: 4, canal: 'Pour Le Brésil 🇧🇷', plataforma: 'youtube', conteudo: 'Roteiro: 7 dias no Brasil', dataProducao: '2026-11-15', dataPublicacao: '2026-11-20', status: 'agendada' },
+    { id: 5, canal: "Sant'Ara", plataforma: 'instagram', conteudo: 'Bastidores da coleção de crochet', dataProducao: '2026-11-10', dataPublicacao: '2026-11-12', status: 'publicada' },
+  ],
+  emails: [
+    { id: 1, de: 'YouTube Studio', email: 'noreply@youtube.com', assunto: 'Seu novo vídeo está performando acima da média 📈', data: 'Hoje, 09:42', lido: false, tipo: 'youtube', resumo: 'O vídeo "Mente em Contraste #12" teve 4x mais visualizações que a média do canal nas primeiras 24h.', cor: '#F9E0E0' },
+    { id: 2, de: 'Google AdSense', email: 'adsense-noreply@google.com', assunto: 'Confirmação de pagamento 💰', data: 'Ontem, 18:15', lido: false, tipo: 'adsense', resumo: 'Seu pagamento de CHF 46,70 referente a outubro foi enviado. Deve cair em até 5 dias úteis.', cor: '#F3EBCB' },
+    { id: 3, de: 'Google Ads', email: 'ads-noreply@google.com', assunto: 'Relatório semanal da campanha', data: 'Ter, 10:00', lido: true, tipo: 'google', resumo: 'Sua campanha teve 1.240 impressões e CTR de 3,2%. Orçamento diário: CHF 15,00.', cor: '#E6EEF0' },
+    { id: 4, de: "Sant'Ara — Canal YouTube", email: 'canal@santara.com.br', assunto: 'Comentário novo no tutorial da gola ✍️', data: 'Seg, 14:30', lido: true, tipo: 'canal', resumo: 'Maria: "Amei o tutorial! Consegui fazer a gola seguindo o passo a passo. Muito obrigada!"', cor: '#F5E4D8' },
+  ],
+  agencyCanais: [
+    { id: 1, nome: 'Pela Suíça 🇨🇭', plataformas: ['YouTube', 'TikTok'], cor: '#E6EEF0', corTexto: '#1e293b', descricao: 'Amiga brasileira descobrindo a Suíça nos detalhes.', idioma: 'Português brasileiro', foto: null },
+    { id: 2, nome: 'Mente em Contraste', plataformas: ['YouTube'], cor: '#0F1419', corTexto: '#ffffff', descricao: 'Ciência comportamental aplicada à vida real.', idioma: 'Português (tradução EN)', foto: null },
+    { id: 3, nome: 'Pour Le Brésil 🇧🇷', plataformas: ['YouTube'], cor: '#F3EBCB', corTexto: '#1e293b', descricao: 'Le Brésil au-delà des clichés.', idioma: 'Francês (tradução EN)', foto: null },
+    { id: 4, nome: "Sant'Ara", plataformas: ['YouTube', 'TikTok', 'Instagram'], cor: '#F5E4D8', corTexto: '#1e293b', descricao: 'Tutoriais, curadoria e produtos artesanais de crochê.', idioma: 'Francês (tradução PT)', foto: null },
+  ],
+  agencyProjetos: [
+    { id: 1, titulo: 'Um dia em Zurique no inverno', canal: 'Pela Suíça 🇨🇭', plataforma: 'TikTok', tipo: 'Short', status: 'em produção', deadline: '2026-11-14', progresso: 70 },
+    { id: 2, titulo: 'Mente em Contraste #13', canal: 'Mente em Contraste', plataforma: 'YouTube', tipo: 'Vídeo longo', status: 'em produção', deadline: '2026-11-18', progresso: 60 },
+    { id: 3, titulo: 'Roteiro: 7 dias no Brasil', canal: 'Pour Le Brésil 🇧🇷', plataforma: 'YouTube', tipo: 'Vídeo longo', status: 'agendado', deadline: '2026-11-20', progresso: 35 },
+    { id: 4, titulo: 'Tutorial — gola cachecol completa', canal: "Sant'Ara", plataforma: 'YouTube', tipo: 'Vídeo longo', status: 'em produção', deadline: '2026-11-16', progresso: 80 },
+    { id: 5, titulo: 'Bastidores da coleção de crochet', canal: "Sant'Ara", plataforma: 'Instagram', tipo: 'Reels', status: 'publicado', deadline: '2026-11-12', progresso: 100 },
+    { id: 6, titulo: '3 erros na gola de crochet', canal: "Sant'Ara", plataforma: 'TikTok', tipo: 'Short', status: 'agendado', deadline: '2026-11-12', progresso: 90 },
+  ],
+  agencyIdeias: [
+    { id: 1, titulo: 'Preços do supermercado na Suíça vs Brasil', canal: 'Pela Suíça 🇨🇭', fonte: 'Google Trends', status: 'aprovada', data: '2026-11-10', observacoes: 'Alta demanda em buscas' },
+    { id: 2, titulo: 'Por que franceses não sorriem para estranhos', canal: 'Pour Le Brésil 🇧🇷', fonte: 'Trend Topics X', status: 'validando', data: '2026-11-09', observacoes: '' },
+    { id: 3, titulo: 'O paradoxo da escolha no dating apps', canal: 'Mente em Contraste', fonte: 'Friendly', status: 'biblioteca', data: '2026-11-08', observacoes: '' },
+    { id: 4, titulo: 'Crochet para iniciantes — ponto corrente', canal: "Sant'Ara", fonte: 'YouTube Search', status: 'aprovada', data: '2026-11-07', observacoes: 'Alta retenção em tutoriais' },
+  ],
+  bibliotecaDiretrizes: [
+    'Roteiros naturais e conversacionais',
+    'Aberturas fortes',
+    'Ganchos de retenção',
+    'Curiosidade e looping',
+    'Ritmo adequado',
+    'CTAs naturais',
+    'Estratégia de conversão',
+    'Estruturas: AIDA, storytelling, problema-tensão-solução, listas progressivas, quebra de expectativa',
+  ],
+  videoLongoEstrutura: [
+    { tempo: '0–5s', regra: 'Gancho' },
+    { tempo: '5–15s', regra: 'Promessa clara' },
+    { tempo: '15–30s', regra: 'Contexto e curiosidade' },
+  ],
+  shortsRegras: [
+    'Começar imediatamente no ponto de maior atenção',
+    'Primeiro segundo decisivo',
+    'Sem silêncios desnecessários',
+    'Ritmo rápido',
+    'CTA natural',
+    'Objetivos: alcance, inscritos e encaminhamento para vídeos longos',
+  ],
+  fontesPesquisa: [
+    'Trend Topics do X',
+    'Friendly',
+    'Barra de pesquisa YouTube',
+    'Google Trends',
+  ],
+  planejamentosVideo: [
+    { id: 1, canal: "Sant'Ara", titulo: 'Tutorial — gola cachecol completa', thumbnail: '', hook: 'Descubra o erro que 90% das pessoas cometem na gola de crochet', notas: 'Vídeo longo para YouTube' },
+    { id: 2, canal: 'Mente em Contraste', titulo: 'Mente em Contraste #13', thumbnail: '', hook: 'Por que você nunca termina o que começa?', notas: 'Episódio sobre procrastinação' },
+  ],
+  youtubeMetricas: {},
+};
+
+let state = loadState();
+let view = 'inicio';
+let agencyView = 'canais';
+let canalSelecionado = null;
+let filtroEmail = 'todos';
+let gmailToken = null;
+let gmailEmails = [];
+let gmailConnected = false;
+let infoBusca = '';
+let infoCategoria = 'todas';
+let editarRotina = false;
+let rotinaEditando = null;
+let mostrarFormAtividade = false;
+let novaAtividade = { nome: '', horario: '', dia: '' };
+let mostrarFormCanal = false;
+let novoCanal = { nome: '', plataformas: [], descricao: '', idioma: '' };
+let mostrarFormProjeto = false;
+let novoProjeto = { titulo: '', canal: '', plataforma: '', tipo: '', deadline: '' };
+let mostrarFormIdeia = false;
+let novaIdeia = { titulo: '', canal: '', fonte: '', observacoes: '' };
+let regrasEditaveis = false;
+let mostrarFormPlanejamento = false;
+let novoPlanejamento = { titulo: '', thumbnail: '', hook: '', notas: '' };
+let modalEdit = null; // { tipo: 'canal'|'projeto'|'ideia', dados: {} }
+let fotoInput = null;
+let youtubeApiKey = '';
+try { youtubeApiKey = localStorage.getItem('yt_api_key') || ''; } catch(e) {}
+let youtubeLoading = false;
+let youtubeLastUpdate = null;
+
+const youtubeCanais = [
+  { nome: "Sant'Ara", id: 'UCpZkozCEYJw5K8Va_ccehnQ' },
+  { nome: 'Mente em Contraste', id: 'UCiQZPtA9JGAzohM9jG1DEmg' },
+  { nome: 'Pela Suíça 🇨🇭', id: 'UCS35YOaOiCHjpZg2kKFUkQA' },
+  { nome: 'Pour Le Brésil 🇧🇷', id: 'UC42s6fCIJ8lIcgpJ5Vo5OuQ' },
+];
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...defaultState, ...parsed };
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(defaultState));
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    alert('Erro ao salvar: armazenamento cheio. Tente remover algumas fotos.');
+  }
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+}
+
+function formatDateFull(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function nextId(arr) {
+  return arr.length > 0 ? Math.max(...arr.map(i => i.id)) + 1 : 1;
+}
+
+// ============ RENDER ============
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header class="header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <h1>Central de Gestão</h1>
+          <p>Quinta-feira, 12 de novembro de 2026 · Parashá Vayishlach</p>
+        </div>
+        <div class="header-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <span>👋 Bem-vinda, Ruthiely</span>
+          <button class="btn btn-sky btn-sm" onclick="baixarHtml()">⬇️ Baixar HTML</button>
+        </div>
+      </div>
+    </header>
+    <nav class="nav">
+      <button class="${view==='inicio'?'active':''}" onclick="setView('inicio')">🏡 Início</button>
+      <button class="amber ${view==='meu-lar'?'active':''}" onclick="setView('meu-lar')">🏠 Meu Lar</button>
+      <button class="rose ${view==='emails'?'active':''}" onclick="setView('emails')">📬 E-mails ${state.emails.filter(e=>!e.lido).length > 0 ? '<span style="background:#e11d48;color:#fff;padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;">'+state.emails.filter(e=>!e.lido).length+'</span>' : ''}</button>
+      <button class="indigo ${view==='agency'?'active':''}" onclick="setView('agency')">🎬 Agency</button>
+      <button class="violet ${view==='agenda'?'active':''}" onclick="setView('agenda')">📅 Agenda</button>
+      <button class="sky ${view==='central-info'?'active':''}" onclick="setView('central-info')">📚 Info</button>
+    </nav>
+    <main class="main">
+      ${renderView()}
+    </main>
+    ${renderModal()}
+  `;
+}
+
+function renderView() {
+  switch(view) {
+    case 'inicio': return renderInicio();
+    case 'meu-lar': return renderMeuLar();
+    case 'emails': return renderEmails();
+    case 'agency': return renderAgency();
+    case 'agenda': return renderAgenda();
+    case 'central-info': return renderCentralInfo();
+    default: return '';
+  }
+}
+
+function renderInicio() {
+  return `
+    <div class="card amber-bg">
+      <h2 class="card-title-lg" style="color:#92400e;">🌅 Meu Dia — Quinta-feira, 12 de novembro</h2>
+      <p class="text-sm" style="color:#b45309;">Parashá Vayishlach · Leitura de hoje: 4ª porção — Gênesis 33:6–33:20</p>
+      <div class="mt-3">
+        ${state.rotinaItens.map(item => `
+          <div class="rotina-item ${item.protegido?'protegido':''}">
+            <span class="rotina-hora">${item.hora}</span>
+            <div class="rotina-info">
+              <h4>${item.atividade} ${item.protegido ? '<span class="badge badge-rose">🔒 Protegido</span>' : ''}</h4>
+              <p>${item.detalhes}</p>
+              ${item.atividade === 'Início do dia' ? `
+                <div style="margin-top:8px;padding:8px;border-radius:8px;border:1px solid #fde68a;background:#fffbeb;">
+                  <p style="font-size:12px;font-weight:600;color:#92400e;">📖 Leitura da Parashá de hoje:</p>
+                  <p style="font-size:13px;color:#92400e;">4ª porção — Gênesis 33:6–33:20</p>
+                  <p style="font-size:12px;color:#b45309;font-style:italic;">Reencontro de Jacó com Esaú e o episódio de Diná em Siquém</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">✅ Tarefas Prioritárias</h3>
+      ${state.tarefasPrioritarias.map(t => `
+        <div class="tarefa-item">
+          <div class="tarefa-check ${t.status==='concluida'?'done':''}" onclick="toggleTarefa(${t.id})">${t.status==='concluida'?'✓':''}</div>
+          <div style="flex:1;">
+            <div class="tarefa-text ${t.status==='concluida'?'done':''}">${t.texto}</div>
+            <div class="tarefa-prazo">Prazo: ${t.prazo}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">⏰ Próximos Prazos</h3>
+      ${state.proximosPrazos.map(p => `
+        <div class="mesclar">
+          <div class="mesclar-info">
+            <p>${p.titulo}</p>
+            <span>${formatDate(p.data)}</span>
+          </div>
+          <span class="mesclar-dias ${p.diasRestantes<=3?'badge-rose':p.diasRestantes<=7?'badge-amber':'badge-emerald'}">${p.diasRestantes} ${p.diasRestantes===1?'dia':'dias'}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">📤 Publicações Programadas</h3>
+      ${state.publicacoesProgramadas.map(p => `
+        <div class="mesclar">
+          <div class="mesclar-info">
+            <p>${p.titulo}</p>
+            <span>${p.canal} · ${formatDate(p.data)} às ${p.horario}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card emerald-bg">
+      <h3 class="card-title" style="color:#065f46;">🕐 Disponibilidade de Tempo Hoje</h3>
+      ${[
+        { inicio: '11:30', fim: '12:30', descricao: 'Manhã — trabalho', duracao: '1h' },
+        { inicio: '13:30', fim: '16:30', descricao: 'Tarde — bloco principal de produtividade', duracao: '3h' },
+        { inicio: '20:00', fim: '21:30', descricao: 'Noite — tempo pessoal/familiar', duracao: '1h30' },
+      ].map(b => `
+        <div class="disponibilidade-item">
+          <div>
+            <p>${b.inicio} — ${b.fim}</p>
+            <span>${b.descricao}</span>
+          </div>
+          <span class="duracao">${b.duracao}</span>
+        </div>
+      `).join('')}
+      <p class="text-xs text-italic mt-3" style="color:#065f46;">💡 Regra inegociável: nunca compensar tarefas atrasadas ocupando horários de sono, jantar, família ou descanso.</p>
+    </div>
+  `;
+}
+
+function renderMeuLar() {
+  return `
+    <div>
+      <h2 class="section-title">🏠 Meu Lar</h2>
+      <p class="section-subtitle">Rotina pessoal e familiar — organização com paz, não pressão</p>
+    </div>
+
+    <div class="card">
+      <div class="flex-between mb-3">
+        <h3 class="card-title" style="margin:0;">📋 Rotina Diária</h3>
+        <div style="display:flex;gap:6px;">
+          <button class="btn ${editarRotina?'btn-emerald':'btn-amber'} btn-sm" onclick="toggleEditarRotina()">${editarRotina?'✓ Concluir':'✏️ Editar'}</button>
+          ${editarRotina ? '<button class="btn btn-indigo btn-sm" onclick="addRotinaItem()">+ Novo</button>' : ''}
+        </div>
+      </div>
+      ${state.rotinaItens.map(item => `
+        <div class="rotina-item ${item.protegido?'protegido':''}">
+          <span class="rotina-hora">${item.hora}</span>
+          <div class="rotina-info">
+            <h4>${item.atividade} ${item.protegido?'<span class="badge badge-rose">🔒</span>':''}</h4>
+            <p>${item.detalhes}</p>
+          </div>
+          ${editarRotina ? `
+            <div class="actions-row">
+              <button class="btn btn-outline btn-icon btn-sm" onclick="editRotinaItem(${item.id})">✏️</button>
+              <button class="btn btn-rose btn-icon btn-sm" onclick="removeRotinaItem(${item.id})">🗑</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+
+    ${rotinaEditando ? `
+      <div class="card indigo-bg">
+        <h3 class="card-title" style="color:#3730a3;">✏️ Editando item</h3>
+        <div class="form-group"><input class="input" value="${rotinaEditando.hora}" onchange="rotinaEditando.hora=this.value" placeholder="Horário"></div>
+        <div class="form-group"><input class="input" value="${rotinaEditando.atividade}" onchange="rotinaEditando.atividade=this.value" placeholder="Atividade"></div>
+        <div class="form-group"><input class="input" value="${rotinaEditando.detalhes}" onchange="rotinaEditando.detalhes=this.value" placeholder="Detalhes"></div>
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" ${rotinaEditando.protegido?'checked':''} onchange="rotinaEditando.protegido=this.checked">
+          <label>🔒 Item protegido</label>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-emerald" onclick="saveRotinaItem()">✓ Salvar</button>
+          <button class="btn btn-outline" onclick="rotinaEditando=null;render()">Cancelar</button>
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="card amber-bg">
+      <h3 class="card-title" style="color:#92400e;">📅 Calendário Hebraico</h3>
+      <div class="mesclar" style="border-color:#fde68a;background:#fff;">
+        <div class="mesclar-info">
+          <p style="font-size:12px;color:#64748b;">Parashá da Semana</p>
+          <p style="font-size:18px;font-weight:600;color:#92400e;">Vayishlach (וַיִּשְׁלַח)</p>
+          <p style="font-size:13px;color:#64748b;">Gênesis 32:4–36:43</p>
+        </div>
+      </div>
+      <div class="mesclar" style="border-color:#fde68a;background:#fff;">
+        <div class="mesclar-info">
+          <p style="font-size:12px;color:#64748b;">Leitura de Hoje (Quinta-feira)</p>
+          <p style="font-size:14px;">4ª porção — Gênesis 33:6–33:20</p>
+          <p style="font-size:12px;color:#64748b;font-style:italic;">Reencontro de Jacó com Esaú e o episódio de Diná em Siquém</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between mb-3">
+        <h3 class="card-title" style="margin:0;">✨ Atividades Adicionais</h3>
+        <button class="btn btn-amber btn-sm" onclick="mostrarFormAtividade=!mostrarFormAtividade;render()">${mostrarFormAtividade?'✕ Fechar':'+ Nova'}</button>
+      </div>
+      ${mostrarFormAtividade ? `
+        <div class="card amber-bg" style="margin-bottom:12px;">
+          <div class="form-group"><input class="input" value="${novaAtividade.nome}" onchange="novaAtividade.nome=this.value" placeholder="Nome"></div>
+          <div class="form-group"><input class="input" value="${novaAtividade.horario}" onchange="novaAtividade.horario=this.value" placeholder="Horário"></div>
+          <div class="form-group"><input class="input" value="${novaAtividade.dia}" onchange="novaAtividade.dia=this.value" placeholder="Dia"></div>
+          <button class="btn btn-amber" onclick="addAtividade()">Adicionar</button>
+        </div>
+      ` : ''}
+      ${state.atividadesAdicionais.map(a => `
+        <div class="mesclar">
+          <div class="mesclar-info">
+            <p>${a.nome}</p>
+            <span>${a.horario} · ${a.dia}</span>
+          </div>
+          <button class="btn btn-rose btn-icon btn-sm" onclick="removeAtividade(${a.id})">🗑</button>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card sky-bg">
+      <h3 class="card-title" style="color:#075985;">🌿 Sábados e Domingos</h3>
+      <div class="mesclar" style="border-color:#bae6fd;background:#fff;">
+        <div class="mesclar-info"><p>Sábado</p><span>Descanso · Leitura bíblica</span></div>
+      </div>
+      <div class="mesclar" style="border-color:#bae6fd;background:#fff;">
+        <div class="mesclar-info"><p>Domingo</p><span>Passeios · Atividades pessoais · Possibilidade de gravação</span></div>
+      </div>
+    </div>
+
+    <div class="card rose-bg">
+      <h3 class="card-title" style="color:#9f1239;">⚖️ Regra Inegociável</h3>
+      <p class="text-sm" style="color:#9f1239;">Nunca compensar tarefas atrasadas ocupando horários de sono, jantar, família ou descanso. O sistema protege o equilíbrio familiar e não preenche todos os espaços livres.</p>
+    </div>
+  `;
+}
+
+function renderEmails() {
+  const emails = gmailConnected ? gmailEmails : state.emails;
+  const filtrados = filtroEmail === 'todos' ? emails : emails.filter(e => e.tipo === filtroEmail);
+  return `
+    <div>
+      <h2 class="section-title">📬 E-mails Relevantes</h2>
+      <p class="section-subtitle">Filtro automático: youtube · adsense · google · canal</p>
+    </div>
+    ${gmailConnected ? `
+      <div class="card emerald-bg" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <div>
+            <p style="font-weight:600;color:#065f46;">✅ Conectado ao Gmail</p>
+            <p style="font-size:12px;color:#065f46;">${gmailEmails.length} e-mail(s) encontrado(s)</p>
+          </div>
+          <button class="btn btn-rose btn-sm" onclick="disconnectGmail()">Desconectar</button>
+        </div>
+      </div>
+    ` : `
+      <div class="card amber-bg" style="margin-bottom:12px;">
+        <p style="font-weight:600;color:#92400e;margin-bottom:8px;">🔗 Conecte seu Gmail real</p>
+        <p style="font-size:13px;color:#b45309;margin-bottom:12px;">Veja seus e-mails de verdade da caixa de entrada (filtro YouTube, AdSense, Google e canal).</p>
+        <button class="btn btn-amber" onclick="connectGmail()">🔗 Conectar Gmail</button>
+      </div>
+    `}
+    <div class="flex-wrap mb-3">
+      ${['todos','youtube','adsense','google','canal'].map(f => `
+        <button class="chip ${filtroEmail===f?'rose active':''}" onclick="filtroEmail='${f}';render()">${f}</button>
+      `).join('')}
+    </div>
+    ${filtrados.length === 0 ? '<p class="text-sm text-muted">Nenhum e-mail encontrado.</p>' : ''}
+    ${filtrados.map(e => `
+      <div class="email-card ${e.lido?'':'unread'}">
+        <div class="email-header">
+          <div class="email-avatar" style="background:${e.cor||'#E2E8F0'};color:#334155;">${(e.de||'?')[0]}</div>
+          <div class="email-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="de">${e.de} ${!e.lido?'<span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:#e11d48;margin-left:4px;"></span>':''}</span>
+              <span class="email-data">${e.data}</span>
+            </div>
+            <div class="assunto">${e.assunto}</div>
+            <p class="resumo">${e.resumo}</p>
+          </div>
+          <button class="btn btn-rose btn-icon btn-sm" onclick="esconderEmailReal('${e.id}')">🗑</button>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function connectGmail() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    alert('A biblioteca do Google ainda não carregou. Aguarde alguns segundos e tente novamente.');
+    return;
+  }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: '281420955340-nkbc7kcr0e52h0roe2c0bf5716goijao.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/gmail.readonly',
+    callback: (tokenResponse) => {
+      if (tokenResponse.error) {
+        alert('Erro ao conectar: ' + tokenResponse.error);
+        return;
+      }
+      gmailToken = tokenResponse.access_token;
+      gmailConnected = true;
+      fetchGmailEmails(gmailToken);
+    },
+  });
+  client.requestAccessToken();
+}
+
+async function fetchGmailEmails(token) {
+  try {
+    const url = 'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20&q=from:youtube.com OR from:adsense.google.com OR from:google.com';
+    const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!res.ok) {
+      alert('Erro ao buscar e-mails: ' + res.status);
+      return;
+    }
+    const data = await res.json();
+    if (!data.messages || data.messages.length === 0) {
+      gmailEmails = [];
+      render();
+      return;
+    }
+    const emails = [];
+    for (const msg of data.messages) {
+      const detailRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const detail = await detailRes.json();
+      const headers = {};
+      (detail.payload?.headers || []).forEach(h => { headers[h.name.toLowerCase()] = h.value; });
+      const from = headers['from'] || 'Desconhecido';
+      const subject = headers['subject'] || '(sem assunto)';
+      const dateRaw = headers['date'] || '';
+      const date = new Date(dateRaw);
+      const dataStr = isNaN(date.getTime()) ? dateRaw : date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      let tipo = 'canal';
+      const fromLower = from.toLowerCase();
+      if (fromLower.includes('youtube')) tipo = 'youtube';
+      else if (fromLower.includes('adsense')) tipo = 'adsense';
+      else if (fromLower.includes('google')) tipo = 'google';
+      emails.push({
+        id: msg.id,
+        de: from,
+        assunto: subject,
+        data: dataStr,
+        resumo: detail.snippet || '',
+        lido: !(detail.labelIds || []).includes('UNREAD'),
+        tipo: tipo,
+        cor: tipo === 'youtube' ? '#F9E0E0' : tipo === 'adsense' ? '#F3EBCB' : tipo === 'google' ? '#E6EEF0' : '#F5E4D8',
+      });
+    }
+    gmailEmails = emails;
+    render();
+  } catch(e) {
+    alert('Erro ao buscar e-mails: ' + e.message);
+  }
+}
+
+function disconnectGmail() {
+  gmailToken = null;
+  gmailConnected = false;
+  gmailEmails = [];
+  render();
+}
+
+function esconderEmailReal(id) {
+  gmailEmails = gmailEmails.filter(e => e.id !== id);
+  render();
+}
+
+function renderAgency() {
+  return `
+    <div>
+      <h2 class="section-title">🎬 Agency Creator SG</h2>
+      <p class="section-subtitle">Gestão de canais, projetos, ideias e diretrizes de conteúdo</p>
+    </div>
+    <div class="flex-wrap mb-3">
+      <button class="chip ${agencyView==='canais'?'indigo active':''}" onclick="agencyView='canais';canalSelecionado=null;render()">📺 Canais</button>
+      <button class="chip ${agencyView==='projetos'?'indigo active':''}" onclick="agencyView='projetos';render()">📋 Projetos</button>
+      <button class="chip ${agencyView==='ideias'?'indigo active':''}" onclick="agencyView='ideias';render()">💡 Ideias</button>
+      <button class="chip ${agencyView==='regras'?'indigo active':''}" onclick="agencyView='regras';render()">📐 Regras</button>
+      <button class="chip ${agencyView==='youtube'?'sky active':''}" onclick="agencyView='youtube';render()">⚡ YouTube</button>
+    </div>
+    ${agencyView === 'canais' && !canalSelecionado ? renderCanaisLista() : ''}
+    ${agencyView === 'canais' && canalSelecionado ? renderCanalDetalhe() : ''}
+    ${agencyView === 'projetos' ? renderProjetos() : ''}
+    ${agencyView === 'ideias' ? renderIdeias() : ''}
+    ${agencyView === 'regras' ? renderRegras() : ''}
+    ${agencyView === 'youtube' ? renderYouTube() : ''}
+  `;
+}
+
+function renderCanaisLista() {
+  return `
+    ${state.agencyCanais.map(c => `
+      <div class="canal-card" onclick="canalSelecionado=${c.id};render()">
+        <div class="canal-avatar" style="background:${c.foto ? `url(${c.foto})` : c.cor};color:${c.corTexto};${c.foto?'':'display:flex;align-items:center;justify-content:center;'}">${c.foto ? '' : c.nome[0]}</div>
+        <div class="canal-info">
+          <h3>${c.nome}</h3>
+          <p>${c.descricao}</p>
+          <div class="plataformas">
+            ${c.plataformas.map(p => `<span class="badge badge-slate">${p}</span>`).join('')}
+          </div>
+          <div class="idioma">🌐 ${c.idioma}</div>
+        </div>
+        <span class="badge badge-indigo">Ver →</span>
+      </div>
+    `).join('')}
+    ${mostrarFormCanal ? `
+      <div class="card indigo-bg">
+        <div class="form-group"><input class="input" value="${novoCanal.nome}" onchange="novoCanal.nome=this.value" placeholder="Nome do canal"></div>
+        <div class="form-group">
+          <div class="chip-row">
+            ${['YouTube','TikTok','Instagram'].map(p => `
+              <button class="chip ${novoCanal.plataformas.includes(p)?'indigo active':''}" onclick="togglePlataforma('${p}')">${p}</button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="form-group"><input class="input" value="${novoCanal.descricao}" onchange="novoCanal.descricao=this.value" placeholder="Descrição"></div>
+        <div class="form-group"><input class="input" value="${novoCanal.idioma}" onchange="novoCanal.idioma=this.value" placeholder="Idioma"></div>
+        <button class="btn btn-indigo" onclick="addCanal()">Salvar canal</button>
+      </div>
+    ` : ''}
+    <button class="btn btn-outline w-full" style="border-style:dashed;padding:14px;" onclick="mostrarFormCanal=!mostrarFormCanal;render()">+ Adicionar novo canal</button>
+  `;
+}
+
+function renderCanalDetalhe() {
+  const c = state.agencyCanais.find(x => x.id === canalSelecionado);
+  if (!c) return '';
+  const projetos = state.agencyProjetos.filter(p => p.canal === c.nome);
+  const ideias = state.agencyIdeias.filter(i => i.canal === c.nome);
+  const planejamentos = state.planejamentosVideo.filter(p => p.canal === c.nome);
+  return `
+    <button class="btn btn-outline btn-sm mb-3" onclick="canalSelecionado=null;render()">← Voltar</button>
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:16px;">
+        <div class="canal-avatar" style="width:64px;height:64px;border-radius:16px;font-size:24px;background:${c.foto?`url(${c.foto})`:c.cor};color:${c.corTexto};background-size:cover;background-position:center;${c.foto?'':'display:flex;align-items:center;justify-content:center;'}">${c.foto?'':c.nome[0]}</div>
+        <div style="flex:1;">
+          <h3 style="font-size:20px;font-weight:600;">${c.nome}</h3>
+          <div class="flex-wrap mt-2">
+            ${c.plataformas.map(p => `<span class="badge badge-slate">${p}</span>`).join('')}
+          </div>
+          <p class="text-sm text-italic text-muted mt-2">${c.descricao}</p>
+          <p class="text-xs text-muted">🌐 ${c.idioma}</p>
+        </div>
+      </div>
+      <div class="mt-3" style="display:flex;gap:6px;">
+        <button class="btn btn-indigo btn-sm" onclick="openEditModal('canal',${c.id})">✏️ Editar canal</button>
+        <button class="btn btn-rose btn-sm" onclick="removeCanal(${c.id})">🗑 Remover</button>
+      </div>
+    </div>
+
+    <h4 class="card-title mt-3">📝 Planejamento de Vídeo</h4>
+    ${mostrarFormPlanejamento ? `
+      <div class="card indigo-bg">
+        <div class="form-group"><input class="input" value="${novoPlanejamento.titulo}" onchange="novoPlanejamento.titulo=this.value" placeholder="Título"></div>
+        <div class="form-group"><input class="input" value="${novoPlanejamento.thumbnail}" onchange="novoPlanejamento.thumbnail=this.value" placeholder="URL da thumbnail"></div>
+        <div class="form-group"><textarea class="textarea" onchange="novoPlanejamento.hook=this.value" placeholder="Hook (gancho)">${novoPlanejamento.hook}</textarea></div>
+        <div class="form-group"><textarea class="textarea" onchange="novoPlanejamento.notas=this.value" placeholder="Notas">${novoPlanejamento.notas}</textarea></div>
+        <button class="btn btn-indigo" onclick="addPlanejamento('${c.nome.replace(/'/g,"\\'")}')">Salvar</button>
+      </div>
+    ` : ''}
+    <button class="btn btn-outline btn-sm mb-3" onclick="mostrarFormPlanejamento=!mostrarFormPlanejamento;render()">${mostrarFormPlanejamento?'✕ Fechar':'+ Novo planejamento'}</button>
+    ${planejamentos.map(p => `
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          ${p.thumbnail ? `<img src="${p.thumbnail}" style="width:112px;height:64px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;">` : ''}
+          <div style="flex:1;">
+            <p style="font-weight:600;">${p.titulo}</p>
+            <div style="margin-top:6px;padding:6px;border-radius:6px;background:#fffbeb;border:1px solid #fde68a;">
+              <p style="font-size:11px;font-weight:600;color:#92400e;">🎣 Hook:</p>
+              <p style="font-size:13px;color:#92400e;">${p.hook}</p>
+            </div>
+            ${p.notas ? `<p class="text-xs text-muted mt-2">${p.notas}</p>` : ''}
+          </div>
+          <button class="btn btn-rose btn-icon btn-sm" onclick="removePlanejamento(${p.id})">🗑</button>
+        </div>
+      </div>
+    `).join('')}
+    ${planejamentos.length === 0 ? '<p class="text-sm text-italic text-muted">Nenhum planejamento ainda.</p>' : ''}
+
+    ${projetos.length > 0 ? `
+      <h4 class="card-title mt-3">📋 Projetos</h4>
+      ${projetos.map(p => `
+        <div class="projeto-card">
+          <div class="flex-between">
+            <span style="font-weight:500;">${p.titulo}</span>
+            <span class="badge ${p.status==='publicado'?'badge-emerald':p.status==='em produção'?'badge-indigo':'badge-amber'}">${p.status}</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${p.progresso}%;background:${p.progresso===100?'#10b981':'#4f46e5'};"></div></div>
+          <p class="text-xs text-muted">📅 Deadline: ${formatDate(p.deadline)}</p>
+        </div>
+      `).join('')}
+    ` : ''}
+
+    ${ideias.length > 0 ? `
+      <h4 class="card-title mt-3">💡 Ideias</h4>
+      ${ideias.map(i => `
+        <div class="ideia-card">
+          <div class="flex-between">
+            <div>
+              <p style="font-weight:500;">${i.titulo}</p>
+              <p class="text-xs text-muted">📚 ${i.fonte}</p>
+            </div>
+            <span class="badge ${i.status==='aprovada'?'badge-emerald':i.status==='validando'?'badge-amber':'badge-slate'}">${i.status}</span>
+          </div>
+        </div>
+      `).join('')}
+    ` : ''}
+  `;
+}
+
+function renderProjetos() {
+  return `
+    ${state.agencyProjetos.map(p => `
+      <div class="projeto-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;">
+            <h4>${p.titulo}</h4>
+            <div class="flex-wrap mt-2">
+              <span class="badge badge-indigo">${p.canal}</span>
+              <span class="badge badge-slate">${p.plataforma}</span>
+              <span class="badge badge-violet">${p.tipo}</span>
+            </div>
+          </div>
+          <span class="badge ${p.status==='publicado'?'badge-emerald':p.status==='em produção'?'badge-indigo':'badge-amber'}">${p.status}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#64748b;margin-top:8px;">
+          <span>Progresso</span>
+          <span style="font-weight:600;">${p.progresso}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p.progresso}%;background:${p.progresso===100?'#10b981':p.progresso>=60?'#4f46e5':'#d97706'};"></div></div>
+        <p class="text-xs text-muted">📅 Deadline: ${formatDate(p.deadline)}</p>
+        <div class="mt-2" style="display:flex;gap:6px;">
+          <button class="btn btn-indigo btn-sm" onclick="openEditModal('projeto',${p.id})">✏️ Editar</button>
+          <button class="btn btn-rose btn-sm" onclick="removeProjeto(${p.id})">🗑 Remover</button>
+        </div>
+      </div>
+    `).join('')}
+    ${mostrarFormProjeto ? `
+      <div class="card" style="border-color:#ddd6fe;background:#faf5ff;">
+        <div class="form-group"><input class="input" value="${novoProjeto.titulo}" onchange="novoProjeto.titulo=this.value" placeholder="Título"></div>
+        <div class="form-group">
+          <select class="select" onchange="novoProjeto.canal=this.value">
+            <option value="">Canal</option>
+            ${state.agencyCanais.map(c => `<option value="${c.nome}" ${novoProjeto.canal===c.nome?'selected':''}>${c.nome}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="select" onchange="novoProjeto.plataforma=this.value">
+            <option value="">Plataforma</option>
+            ${['YouTube','TikTok','Instagram'].map(p => `<option value="${p}" ${novoProjeto.plataforma===p?'selected':''}>${p}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="select" onchange="novoProjeto.tipo=this.value">
+            <option value="">Tipo</option>
+            <option value="Vídeo longo" ${novoProjeto.tipo==='Vídeo longo'?'selected':''}>Vídeo longo</option>
+            <option value="Short" ${novoProjeto.tipo==='Short'?'selected':''}>Short</option>
+            <option value="Reels" ${novoProjeto.tipo==='Reels'?'selected':''}>Reels</option>
+          </select>
+        </div>
+        <div class="form-group"><input type="date" class="input" value="${novoProjeto.deadline}" onchange="novoProjeto.deadline=this.value"></div>
+        <button class="btn btn-violet" onclick="addProjeto()">Salvar projeto</button>
+      </div>
+    ` : ''}
+    <button class="btn btn-outline w-full" style="border-style:dashed;padding:14px;" onclick="mostrarFormProjeto=!mostrarFormProjeto;render()">+ Adicionar novo projeto</button>
+  `;
+}
+
+function renderIdeias() {
+  return `
+    <div class="flex-between mb-3">
+      <h3 class="card-title" style="margin:0;">💡 Central de Pesquisa e Validação</h3>
+      <button class="btn btn-indigo btn-sm" onclick="mostrarFormIdeia=!mostrarFormIdeia;render()">${mostrarFormIdeia?'✕ Fechar':'+ Nova ideia'}</button>
+    </div>
+    <div class="flex-wrap mb-3">
+      ${['biblioteca','validando','aprovada','adaptada','arquivada','descartada'].map(s => `<span class="badge badge-slate">${s}</span>`).join('')}
+    </div>
+    ${mostrarFormIdeia ? `
+      <div class="card indigo-bg">
+        <div class="form-group"><input class="input" value="${novaIdeia.titulo}" onchange="novaIdeia.titulo=this.value" placeholder="Título"></div>
+        <div class="form-group">
+          <select class="select" onchange="novaIdeia.canal=this.value">
+            <option value="">Canal</option>
+            ${state.agencyCanais.map(c => `<option value="${c.nome}" ${novaIdeia.canal===c.nome?'selected':''}>${c.nome}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="select" onchange="novaIdeia.fonte=this.value">
+            <option value="">Fonte</option>
+            <option value="Trend Topics X" ${novaIdeia.fonte==='Trend Topics X'?'selected':''}>Trend Topics do X</option>
+            <option value="Friendly" ${novaIdeia.fonte==='Friendly'?'selected':''}>Friendly</option>
+            <option value="YouTube Search" ${novaIdeia.fonte==='YouTube Search'?'selected':''}>YouTube Search</option>
+            <option value="Google Trends" ${novaIdeia.fonte==='Google Trends'?'selected':''}>Google Trends</option>
+          </select>
+        </div>
+        <div class="form-group"><textarea class="textarea" onchange="novaIdeia.observacoes=this.value" placeholder="Observações">${novaIdeia.observacoes}</textarea></div>
+        <button class="btn btn-indigo" onclick="addIdeia()">Salvar na biblioteca</button>
+      </div>
+    ` : ''}
+    ${state.agencyIdeias.map(i => `
+      <div class="ideia-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;">
+            <h4>${i.titulo}</h4>
+            <div class="flex-wrap mt-2">
+              <span class="badge badge-indigo">${i.canal}</span>
+              <span class="badge badge-slate">📚 ${i.fonte}</span>
+            </div>
+            ${i.observacoes ? `<p class="text-xs text-muted mt-2">${i.observacoes}</p>` : ''}
+            <p class="text-xs text-muted mt-1">📅 ${formatDateFull(i.data)}</p>
+          </div>
+          <button class="btn btn-sm ${i.status==='aprovada'?'btn-emerald':i.status==='validando'?'btn-amber':'btn-outline'}" onclick="avancarIdeia(${i.id})">${i.status} →</button>
+        </div>
+        <div class="mt-2" style="display:flex;gap:6px;">
+          <button class="btn btn-indigo btn-sm" onclick="openEditModal('ideia',${i.id})">✏️ Editar</button>
+          <button class="btn btn-rose btn-sm" onclick="removeIdeia(${i.id})">🗑 Remover</button>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderRegras() {
+  return `
+    <div class="flex-between mb-3">
+      <h3 class="card-title" style="margin:0;">📐 Regras Gerais de Conteúdo</h3>
+      <button class="btn ${regrasEditaveis?'btn-emerald':'btn-indigo'} btn-sm" onclick="regrasEditaveis=!regrasEditaveis;render()">${regrasEditaveis?'✓ Concluir':'✏️ Editar'}</button>
+    </div>
+
+    <div class="card">
+      <h4 style="font-weight:600;margin-bottom:8px;">📝 Biblioteca de Diretrizes</h4>
+      ${!regrasEditaveis ? `
+        <ul class="regra-list">
+          ${state.bibliotecaDiretrizes.map(d => `<li>${d}</li>`).join('')}
+        </ul>
+      ` : `
+        ${state.bibliotecaDiretrizes.map((d, i) => `
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input class="input" value="${d}" onchange="state.bibliotecaDiretrizes[${i}]=this.value;saveState()" style="flex:1;">
+            <button class="btn btn-rose btn-icon btn-sm" onclick="state.bibliotecaDiretrizes.splice(${i},1);saveState();render()">🗑</button>
+          </div>
+        `).join('')}
+        <button class="btn btn-outline btn-sm mt-2" onclick="state.bibliotecaDiretrizes.push('');saveState();render()">+ Adicionar</button>
+      `}
+    </div>
+
+    <div class="card">
+      <h4 style="font-weight:600;margin-bottom:8px;">🎬 Vídeos Longos — Estrutura de Abertura</h4>
+      ${!regrasEditaveis ? `
+        ${state.videoLongoEstrutura.map((item, i) => `
+          <div class="estrutura-item">
+            <span class="estrutura-tempo ${i===0?'badge-rose':i===1?'badge-amber':'badge-emerald'}">${item.tempo}</span>
+            <span>${item.regra}</span>
+          </div>
+        `).join('')}
+      ` : `
+        ${state.videoLongoEstrutura.map((item, i) => `
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input class="input" value="${item.tempo}" onchange="state.videoLongoEstrutura[${i}].tempo=this.value;saveState()" style="width:80px;">
+            <input class="input" value="${item.regra}" onchange="state.videoLongoEstrutura[${i}].regra=this.value;saveState()" style="flex:1;">
+            <button class="btn btn-rose btn-icon btn-sm" onclick="state.videoLongoEstrutura.splice(${i},1);saveState();render()">🗑</button>
+          </div>
+        `).join('')}
+        <button class="btn btn-outline btn-sm mt-2" onclick="state.videoLongoEstrutura.push({tempo:'',regra:''});saveState();render()">+ Adicionar</button>
+      `}
+    </div>
+
+    <div class="card">
+      <h4 style="font-weight:600;margin-bottom:8px;">⚡ Shorts / Reels / TikTok</h4>
+      ${!regrasEditaveis ? `
+        <ul class="regra-list">
+          ${state.shortsRegras.map(r => `<li>${r}</li>`).join('')}
+        </ul>
+      ` : `
+        ${state.shortsRegras.map((r, i) => `
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input class="input" value="${r}" onchange="state.shortsRegras[${i}]=this.value;saveState()" style="flex:1;">
+            <button class="btn btn-rose btn-icon btn-sm" onclick="state.shortsRegras.splice(${i},1);saveState();render()">🗑</button>
+          </div>
+        `).join('')}
+        <button class="btn btn-outline btn-sm mt-2" onclick="state.shortsRegras.push('');saveState();render()">+ Adicionar</button>
+      `}
+    </div>
+
+    <div class="card indigo-bg">
+      <h4 style="font-weight:600;color:#3730a3;margin-bottom:8px;">🔬 Fontes de Pesquisa</h4>
+      ${!regrasEditaveis ? `
+        <div class="flex-wrap">
+          ${state.fontesPesquisa.map(f => `<span class="fonte-chip">${f}</span>`).join('')}
+        </div>
+      ` : `
+        ${state.fontesPesquisa.map((f, i) => `
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input class="input" value="${f}" onchange="state.fontesPesquisa[${i}]=this.value;saveState()" style="flex:1;">
+            <button class="btn btn-rose btn-icon btn-sm" onclick="state.fontesPesquisa.splice(${i},1);saveState();render()">🗑</button>
+          </div>
+        `).join('')}
+        <button class="btn btn-outline btn-sm mt-2" onclick="state.fontesPesquisa.push('');saveState();render()">+ Adicionar</button>
+      `}
+    </div>
+  `;
+}
+
+function renderAgenda() {
+  return `
+    <div>
+      <h2 class="section-title">📅 Agenda Geral</h2>
+      <p class="section-subtitle">Datas de produção e publicação de todos os canais e projetos</p>
+    </div>
+    ${state.agendaItens.map(item => `
+      <div class="agenda-item">
+        <h4>${item.conteudo}</h4>
+        <div class="flex-wrap mt-2">
+          <span class="badge badge-violet">${item.canal}</span>
+          <span class="badge badge-slate">${item.plataforma}</span>
+          <span class="badge ${item.status==='publicada'?'badge-emerald':item.status==='em produção'?'badge-indigo':'badge-amber'}">${item.status}</span>
+        </div>
+        <div class="agenda-datas">
+          <span>🎬 Produção: ${formatDate(item.dataProducao)}</span>
+          <span>🚀 Publicação: ${formatDate(item.dataPublicacao)}</span>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderCentralInfo() {
+  const links = [
+    { id: 1, categoria: 'YouTube', titulo: 'Diretrizes da comunidade', url: 'https://www.youtube.com/howyoutubeworks/policies/community-guidelines/', descricao: 'Regras de conteúdo: o que é permitido, restrições de idade e consequências de violações.' },
+    { id: 2, categoria: 'YouTube', titulo: 'Central de Criadores', url: 'https://www.youtube.com/intl/pt-BR/creators/', descricao: 'Portal oficial para criadores: recursos, boas práticas e novidades do YouTube.' },
+    { id: 3, categoria: 'YouTube', titulo: 'Programa de Parcerias (monetização)', url: 'https://support.google.com/youtube/answer/72851', descricao: 'Requisitos para ativar a monetização: inscritos, horas assistidas e elegibilidade.' },
+    { id: 4, categoria: 'YouTube', titulo: 'Política de conteúdo adequado para anunciantes', url: 'https://support.google.com/youtube/answer/1311392', descricao: 'O que influencia a elegibilidade de anúncios nos seus vídeos e como evitar restrições.' },
+    { id: 5, categoria: 'YouTube', titulo: 'Conteúdo reutilizado e originalidade', url: 'https://support.google.com/youtube/answer/9890437', descricao: 'Política sobre reutilização de conteúdo e exigência de originalidade para monetizar.' },
+    { id: 6, categoria: 'YouTube', titulo: 'Direitos autorais e Content ID', url: 'https://support.google.com/youtube/topic/2779544', descricao: 'Como funcionam direitos autorais, reivindicações e o sistema Content ID.' },
+    { id: 7, categoria: 'YouTube', titulo: 'Termos de Serviço', url: 'https://www.youtube.com/t/terms', descricao: 'Termos oficiais que regem o uso da plataforma.' },
+    { id: 8, categoria: 'YouTube', titulo: 'Creator Academy', url: 'https://creatoracademy.youtube.com/', descricao: 'Cursos gratuitos do YouTube sobre estratégia, retenção e crescimento de canais.' },
+    { id: 9, categoria: 'AdSense', titulo: 'Políticas do Programa AdSense', url: 'https://support.google.com/adsense/answer/48182', descricao: 'Regras de conteúdo e comportamento para manter a conta em boa situação.' },
+    { id: 10, categoria: 'AdSense', titulo: 'Receber pagamentos', url: 'https://support.google.com/adsense/answer/1709858', descricao: 'Como funcionam os pagamentos, limites e formas de recebimento.' },
+    { id: 11, categoria: 'TikTok', titulo: 'Diretrizes da comunidade', url: 'https://www.tiktok.com/community-guidelines', descricao: 'Regras de conteúdo e segurança da plataforma TikTok.' },
+    { id: 12, categoria: 'TikTok', titulo: 'Portal de Criadores', url: 'https://www.tiktok.com/creators/creator-portal/en-us/', descricao: 'Recursos, dicas e ferramentas oficiais para criadores no TikTok.' },
+    { id: 13, categoria: 'TikTok', titulo: 'Termos de Serviço', url: 'https://www.tiktok.com/legal/terms-of-service', descricao: 'Termos oficiais que regem o uso do TikTok.' },
+    { id: 14, categoria: 'Instagram', titulo: 'Diretrizes da comunidade', url: 'https://help.instagram.com/477434105621119', descricao: 'Regras de conteúdo e comportamento no Instagram.' },
+    { id: 15, categoria: 'Instagram', titulo: 'Termos de uso', url: 'https://help.instagram.com/581066165581870', descricao: 'Termos oficiais que regem o uso do Instagram.' },
+    { id: 16, categoria: 'Instagram', titulo: 'Políticas de conteúdo de marca', url: 'https://help.instagram.com/116947042301556', descricao: 'Regras para parcerias pagas e sinalização de conteúdo patrocinado.' },
+  ];
+  const filtrados = links.filter(l => {
+    const b = infoBusca.toLowerCase();
+    const matchBusca = !b || l.titulo.toLowerCase().includes(b) || l.descricao.toLowerCase().includes(b);
+    const matchCat = infoCategoria === 'todas' || l.categoria === infoCategoria;
+    return matchBusca && matchCat;
+  });
+  return `
+    <div>
+      <h2 class="section-title">📚 Central de Informações</h2>
+      <p class="section-subtitle">Base de conhecimento viva — links oficiais e diretrizes das plataformas</p>
+    </div>
+    <div class="card sky-bg">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <input class="input" value="${infoBusca}" onchange="infoBusca=this.value;render()" placeholder="🔎 Buscar por título ou assunto...">
+        <div class="flex-wrap">
+          ${['todas','YouTube','TikTok','Instagram','AdSense'].map(cat => `
+            <button class="chip ${infoCategoria===cat?'sky active':''}" onclick="infoCategoria='${cat}';render()">${cat==='todas'?'Todas':cat}</button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    ${['YouTube','TikTok','Instagram','AdSense'].map(cat => {
+      const itens = filtrados.filter(l => l.categoria === cat);
+      if (!itens.length) return '';
+      const icon = cat==='AdSense'?'💰':cat==='YouTube'?'▶️':cat==='TikTok'?'🎵':'📸';
+      return `
+        <h4 class="card-title mt-3">${icon} ${cat==='AdSense'?'Google AdSense':cat}</h4>
+        ${itens.map(l => `
+          <a class="link-card" href="${l.url}" target="_blank" rel="noreferrer">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <span>🔗</span>
+              <div style="flex:1;">
+                <h4>${l.titulo}</h4>
+                <p>${l.descricao}</p>
+              </div>
+              <span class="text-xs" style="color:#0284c7;">Abrir ↗</span>
+            </div>
+          </a>
+        `).join('')}
+      `;
+    }).join('')}
+    ${filtrados.length === 0 ? '<div class="card"><p class="text-sm text-muted">Nenhum link encontrado.</p></div>' : ''}
+  `;
+}
+
+function renderModal() {
+  if (!modalEdit) return '<div class="modal-overlay" id="modalOverlay"></div>';
+  const { tipo, dados } = modalEdit;
+  let content = '';
+  if (tipo === 'canal') {
+    content = `
+      <div class="foto-upload">
+        <div class="foto-preview" id="fotoPreview" style="background:${dados.foto?`url(${dados.foto})`:dados.cor};color:${dados.corTexto};${dados.foto?'':'display:flex;align-items:center;justify-content:center;'}">${dados.foto?'':dados.nome[0]}</div>
+        <div class="foto-actions">
+          <button class="btn btn-indigo btn-sm" onclick="document.getElementById('fotoInput').click()">📷 Escolher foto</button>
+          ${dados.foto ? '<button class="btn btn-outline btn-sm" onclick="removerFotoCanal()">✕ Remover foto</button>' : ''}
+          <input type="file" id="fotoInput" class="hidden-input" accept="image/*" onchange="handleFotoUpload(event)">
+        </div>
+      </div>
+      <div class="form-group"><label>Nome</label><input class="input" id="editNome" value="${dados.nome}"></div>
+      <div class="form-group"><label>Descrição</label><input class="input" id="editDescricao" value="${dados.descricao}"></div>
+      <div class="form-group"><label>Idioma</label><input class="input" id="editIdioma" value="${dados.idioma}"></div>
+      <div class="form-group">
+        <label>Plataformas</label>
+        <div class="chip-row">
+          ${['YouTube','TikTok','Instagram'].map(p => `
+            <button class="chip ${dados.plataformas.includes(p)?'indigo active':''}" onclick="togglePlataformaEdit('${p}')">${p}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-emerald" onclick="saveEditCanal()">✓ Salvar</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      </div>
+    `;
+  } else if (tipo === 'projeto') {
+    content = `
+      <div class="form-group"><label>Título</label><input class="input" id="editTitulo" value="${dados.titulo}"></div>
+      <div class="form-group"><label>Canal</label>
+        <select class="select" id="editCanal">
+          ${state.agencyCanais.map(c => `<option value="${c.nome}" ${dados.canal===c.nome?'selected':''}>${c.nome}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Plataforma</label>
+        <select class="select" id="editPlataforma">
+          ${['YouTube','TikTok','Instagram'].map(p => `<option value="${p}" ${dados.plataforma===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Tipo</label>
+        <select class="select" id="editTipo">
+          <option value="Vídeo longo" ${dados.tipo==='Vídeo longo'?'selected':''}>Vídeo longo</option>
+          <option value="Short" ${dados.tipo==='Short'?'selected':''}>Short</option>
+          <option value="Reels" ${dados.tipo==='Reels'?'selected':''}>Reels</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select class="select" id="editStatus">
+          ${['em produção','agendado','publicado'].map(s => `<option value="${s}" ${dados.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Progresso: <span id="progVal">${dados.progresso}</span>%</label>
+        <input type="range" min="0" max="100" value="${dados.progresso}" id="editProgresso" oninput="document.getElementById('progVal').textContent=this.value" style="width:100%;">
+      </div>
+      <div class="form-group"><label>Deadline</label><input type="date" class="input" id="editDeadline" value="${dados.deadline}"></div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-emerald" onclick="saveEditProjeto()">✓ Salvar</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      </div>
+    `;
+  } else if (tipo === 'ideia') {
+    content = `
+      <div class="form-group"><label>Título</label><input class="input" id="editTitulo" value="${dados.titulo}"></div>
+      <div class="form-group"><label>Canal</label>
+        <select class="select" id="editCanal">
+          ${state.agencyCanais.map(c => `<option value="${c.nome}" ${dados.canal===c.nome?'selected':''}>${c.nome}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Fonte</label>
+        <select class="select" id="editFonte">
+          <option value="Trend Topics X" ${dados.fonte==='Trend Topics X'?'selected':''}>Trend Topics do X</option>
+          <option value="Friendly" ${dados.fonte==='Friendly'?'selected':''}>Friendly</option>
+          <option value="YouTube Search" ${dados.fonte==='YouTube Search'?'selected':''}>YouTube Search</option>
+          <option value="Google Trends" ${dados.fonte==='Google Trends'?'selected':''}>Google Trends</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select class="select" id="editStatus">
+          ${['biblioteca','validando','aprovada','adaptada','arquivada','descartada'].map(s => `<option value="${s}" ${dados.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Observações</label><textarea class="textarea" id="editObs">${dados.observacoes||''}</textarea></div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-emerald" onclick="saveEditIdeia()">✓ Salvar</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="modal-overlay show" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>${tipo==='canal'?'✏️ Editar Canal':tipo==='projeto'?'✏️ Editar Projeto':'✏️ Editar Ideia'}</h3>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+// ============ AÇÕES ============
+function setView(v) { view = v; render(); }
+function toggleEditarRotina() { editarRotina = !editarRotina; render(); }
+function addRotinaItem() {
+  state.rotinaItens.push({ id: nextId(state.rotinaItens), hora: '00:00', atividade: 'Nova atividade', detalhes: '', protegido: false, fixo: false });
+  saveState(); render();
+}
+function editRotinaItem(id) {
+  rotinaEditando = JSON.parse(JSON.stringify(state.rotinaItens.find(r => r.id === id)));
+  render();
+}
+function saveRotinaItem() {
+  if (!rotinaEditando || !rotinaEditando.hora.trim()) return;
+  state.rotinaItens = state.rotinaItens.map(i => i.id === rotinaEditando.id ? { ...rotinaEditando } : i);
+  rotinaEditando = null;
+  saveState(); render();
+}
+function removeRotinaItem(id) {
+  state.rotinaItens = state.rotinaItens.filter(i => i.id !== id);
+  saveState(); render();
+}
+function addAtividade() {
+  if (!novaAtividade.nome.trim()) return;
+  state.atividadesAdicionais.push({ id: nextId(state.atividadesAdicionais), ...novaAtividade, fixo: false });
+  novaAtividade = { nome: '', horario: '', dia: '' };
+  mostrarFormAtividade = false;
+  saveState(); render();
+}
+function removeAtividade(id) {
+  state.atividadesAdicionais = state.atividadesAdicionais.filter(a => a.id !== id);
+  saveState(); render();
+}
+function toggleTarefa(id) {
+  state.tarefasPrioritarias = state.tarefasPrioritarias.map(t => t.id === id ? { ...t, status: t.status === 'concluida' ? 'pendente' : 'concluida' } : t);
+  saveState(); render();
+}
+function togglePlataforma(p) {
+  const has = novoCanal.plataformas.includes(p);
+  novoCanal.plataformas = has ? novoCanal.plataformas.filter(x => x !== p) : [...novoCanal.plataformas, p];
+  render();
+}
+function togglePlataformaEdit(p) {
+  const d = modalEdit.dados;
+  const has = d.plataformas.includes(p);
+  d.plataformas = has ? d.plataformas.filter(x => x !== p) : [...d.plataformas, p];
+  render();
+}
+function addCanal() {
+  if (!novoCanal.nome.trim()) return;
+  const cores = ['#E0F2FE','#FCE7F3','#DCFCE7','#EDE9FE'];
+  state.agencyCanais.push({
+    id: Date.now(), nome: novoCanal.nome, plataformas: [...novoCanal.plataformas],
+    cor: cores[state.agencyCanais.length % cores.length], corTexto: '#1e293b',
+    descricao: novoCanal.descricao || 'Novo canal', idioma: novoCanal.idioma || '', foto: null
+  });
+  novoCanal = { nome: '', plataformas: [], descricao: '', idioma: '' };
+  mostrarFormCanal = false;
+  saveState(); render();
+}
+function removeCanal(id) {
+  if (!confirm('Remover este canal?')) return;
+  state.agencyCanais = state.agencyCanais.filter(c => c.id !== id);
+  if (canalSelecionado === id) canalSelecionado = null;
+  saveState(); render();
+}
+function addProjeto() {
+  if (!novoProjeto.titulo.trim() || !novoProjeto.canal || !novoProjeto.plataforma) return;
+  state.agencyProjetos.push({ ...novoProjeto, id: Date.now(), status: 'em produção', progresso: 0 });
+  novoProjeto = { titulo: '', canal: '', plataforma: '', tipo: '', deadline: '' };
+  mostrarFormProjeto = false;
+  saveState(); render();
+}
+function removeProjeto(id) {
+  if (!confirm('Remover este projeto?')) return;
+  state.agencyProjetos = state.agencyProjetos.filter(p => p.id !== id);
+  saveState(); render();
+}
+function addIdeia() {
+  if (!novaIdeia.titulo.trim()) return;
+  state.agencyIdeias.push({ ...novaIdeia, id: Date.now(), status: 'biblioteca', data: new Date().toISOString().split('T')[0] });
+  novaIdeia = { titulo: '', canal: '', fonte: '', observacoes: '' };
+  mostrarFormIdeia = false;
+  saveState(); render();
+}
+function avancarIdeia(id) {
+  const ordem = ['biblioteca','validando','aprovada','adaptada','arquivada','descartada'];
+  state.agencyIdeias = state.agencyIdeias.map(i => {
+    if (i.id !== id) return i;
+    const idx = ordem.indexOf(i.status);
+    return idx < ordem.length - 1 ? { ...i, status: ordem[idx + 1] } : i;
+  });
+  saveState(); render();
+}
+function removeIdeia(id) {
+  if (!confirm('Remover esta ideia?')) return;
+  state.agencyIdeias = state.agencyIdeias.filter(i => i.id !== id);
+  saveState(); render();
+}
+function addPlanejamento(canalNome) {
+  if (!novoPlanejamento.titulo.trim()) return;
+  state.planejamentosVideo.push({ ...novoPlanejamento, id: Date.now(), canal: canalNome });
+  novoPlanejamento = { titulo: '', thumbnail: '', hook: '', notas: '' };
+  mostrarFormPlanejamento = false;
+  saveState(); render();
+}
+function removePlanejamento(id) {
+  state.planejamentosVideo = state.planejamentosVideo.filter(p => p.id !== id);
+  saveState(); render();
+}
+
+// ============ MODAL EDIÇÃO ============
+function openEditModal(tipo, id) {
+  let dados;
+  if (tipo === 'canal') dados = JSON.parse(JSON.stringify(state.agencyCanais.find(c => c.id === id)));
+  else if (tipo === 'projeto') dados = JSON.parse(JSON.stringify(state.agencyProjetos.find(p => p.id === id)));
+  else if (tipo === 'ideia') dados = JSON.parse(JSON.stringify(state.agencyIdeias.find(i => i.id === id)));
+  modalEdit = { tipo, dados };
+  render();
+}
+function closeModal() { modalEdit = null; render(); }
+
+function saveEditCanal() {
+  const d = modalEdit.dados;
+  d.nome = document.getElementById('editNome').value;
+  d.descricao = document.getElementById('editDescricao').value;
+  d.idioma = document.getElementById('editIdioma').value;
+  const idx = state.agencyCanais.findIndex(c => c.id === d.id);
+  if (idx >= 0) { state.agencyCanais[idx] = { ...state.agencyCanais[idx], ...d }; }
+  // Atualizar referências em projetos/ideias/agenda se o nome mudou
+  const oldNome = state.agencyCanais[idx]?.nome;
+  // Já salvou o nome novo em d.nome, mas precisamos do antigo para comparar
+  // Na verdade, o nome antigo está em state.agencyCanais[idx].nome ANTES da atribuição
+  // Vamos refazer:
+  closeModal();
+  saveState(); render();
+}
+
+function saveEditProjeto() {
+  const d = modalEdit.dados;
+  d.titulo = document.getElementById('editTitulo').value;
+  d.canal = document.getElementById('editCanal').value;
+  d.plataforma = document.getElementById('editPlataforma').value;
+  d.tipo = document.getElementById('editTipo').value;
+  d.status = document.getElementById('editStatus').value;
+  d.progresso = parseInt(document.getElementById('editProgresso').value);
+  d.deadline = document.getElementById('editDeadline').value;
+  const idx = state.agencyProjetos.findIndex(p => p.id === d.id);
+  if (idx >= 0) state.agencyProjetos[idx] = { ...state.agencyProjetos[idx], ...d };
+  closeModal();
+  saveState(); render();
+}
+
+function saveEditIdeia() {
+  const d = modalEdit.dados;
+  d.titulo = document.getElementById('editTitulo').value;
+  d.canal = document.getElementById('editCanal').value;
+  d.fonte = document.getElementById('editFonte').value;
+  d.status = document.getElementById('editStatus').value;
+  d.observacoes = document.getElementById('editObs').value;
+  const idx = state.agencyIdeias.findIndex(i => i.id === d.id);
+  if (idx >= 0) state.agencyIdeias[idx] = { ...state.agencyIdeias[idx], ...d };
+  closeModal();
+  saveState(); render();
+}
+
+// ============ UPLOAD DE FOTO ============
+function handleFotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    modalEdit.dados.foto = e.target.result;
+    saveState();
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removerFotoCanal() {
+  modalEdit.dados.foto = null;
+  saveState();
+  render();
+}
+
+// ============ YOUTUBE ============
+function formatNumber(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString('pt-BR');
+}
+
+async function fetchChannelStats(channelId) {
+  const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${encodeURIComponent(youtubeApiKey)}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || ('HTTP ' + res.status));
+  }
+  const data = await res.json();
+  return (data.items || [])[0];
+}
+
+async function buscarMetricaCanal(channelId) {
+  if (!youtubeApiKey) {
+    alert('⚠️ Configure sua API Key do YouTube no módulo ⚡ YouTube primeiro.');
+    return;
+  }
+  youtubeLoading = true; render();
+  try {
+    const item = await fetchChannelStats(channelId);
+    if (!item) {
+      alert('Canal não encontrado para o ID:\n' + channelId);
+    } else {
+      const st = item.statistics || {};
+      state.youtubeMetricas[channelId] = {
+        inscritos: parseInt(st.subscriberCount || '0', 10),
+        visualizacoes: parseInt(st.viewCount || '0', 10),
+        videos: parseInt(st.videoCount || '0', 10),
+        atualizadoEm: new Date().toLocaleString('pt-BR'),
+      };
+      youtubeLastUpdate = new Date().toLocaleString('pt-BR');
+    }
+  } catch(e) {
+    alert('Erro ao buscar métricas: ' + e.message + '\nVerifique a API Key e tente novamente.');
+  }
+  youtubeLoading = false;
+  saveState(); render();
+}
+
+async function buscarMetricasYouTube() {
+  if (!youtubeApiKey) {
+    alert('⚠️ Configure sua API Key do YouTube primeiro.');
+    return;
+  }
+  youtubeLoading = true; render();
+  try {
+    for (const c of youtubeCanais) {
+      try {
+        const item = await fetchChannelStats(c.id);
+        if (item) {
+          const st = item.statistics || {};
+          state.youtubeMetricas[c.id] = {
+            inscritos: parseInt(st.subscriberCount || '0', 10),
+            visualizacoes: parseInt(st.viewCount || '0', 10),
+            videos: parseInt(st.videoCount || '0', 10),
+            atualizadoEm: new Date().toLocaleString('pt-BR'),
+          };
+        }
+      } catch(e) {
+        console.warn('Falha ao buscar ' + c.nome, e);
+      }
+    }
+    youtubeLastUpdate = new Date().toLocaleString('pt-BR');
+    alert('✅ Busca concluída! Os dados reais que consegui buscar estão no módulo.');
+  } catch(e) {
+    alert('Erro ao buscar métricas: ' + e.message);
+  }
+  youtubeLoading = false;
+  saveState(); render();
+}
+
+function renderYouTube() {
+  return `
+    <div>
+      <h2 class="section-title">⚡ YouTube — Métricas Reais</h2>
+      <p class="section-subtitle">Dados oficiais da API do YouTube. Nenhum número fictício.</p>
+    </div>
+    <div class="card sky-bg">
+      <p style="font-weight:600;color:#075985;margin-bottom:8px;">🔑 API Key do YouTube</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input class="input" type="password" value="${youtubeApiKey}" placeholder="Cole sua API Key do YouTube aqui" style="flex:1;min-width:200px;" onchange="youtubeApiKey=this.value;try{localStorage.setItem('yt_api_key',youtubeApiKey)}catch(e){}">
+        <button class="btn btn-sky" onclick="buscarMetricasYouTube()">⚡ Buscar todos</button>
+      </div>
+      ${youtubeLastUpdate ? `<p class="text-xs text-muted mt-2">Última atualização: ${youtubeLastUpdate}</p>` : '<p class="text-xs text-muted mt-2">Nenhuma atualização ainda — clique em buscar para carregar dados reais.</p>'}
+    </div>
+    ${youtubeCanais.map(c => {
+      const m = state.youtubeMetricas[c.id];
+      return `
+        <div class="card" style="border-color:#c7d2fe;">
+          <div class="flex-between">
+            <div>
+              <h4 style="font-weight:600;">${c.nome}</h4>
+              <p class="text-xs text-muted">ID: ${c.id}</p>
+            </div>
+            <span class="badge badge-indigo">${m ? 'Dados reais ✓' : 'Sem dados'}</span>
+          </div>
+          ${m ? `
+            <div class="grid-2 mt-3">
+              <div style="padding:12px;border-radius:10px;background:#eef2ff;text-align:center;">
+                <p class="text-xs" style="color:#475569;">👥 Inscritos</p>
+                <p style="font-size:18px;font-weight:700;color:#3730a3;">${formatNumber(m.inscritos)}</p>
+              </div>
+              <div style="padding:12px;border-radius:10px;background:#eef2ff;text-align:center;">
+                <p class="text-xs" style="color:#475569;">👁 Visualizações</p>
+                <p style="font-size:18px;font-weight:700;color:#3730a3;">${formatNumber(m.visualizacoes)}</p>
+              </div>
+              <div style="padding:12px;border-radius:10px;background:#eef2ff;text-align:center;">
+                <p class="text-xs" style="color:#475569;">🎬 Vídeos</p>
+                <p style="font-size:18px;font-weight:700;color:#3730a3;">${formatNumber(m.videos)}</p>
+              </div>
+            </div>
+            <p class="text-xs text-muted mt-2">Atualizado em: ${m.atualizadoEm}</p>
+          ` : `
+            <p class="text-sm text-italic mt-2" style="color:#64748b;">🔒 Sem dados ainda — clique abaixo para carregar as estatísticas reais. Nada de números inventados.</p>
+          `}
+          <button class="btn btn-indigo btn-sm mt-3" onclick="buscarMetricaCanal('${c.id}')">⚡ Buscar dados reais</button>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+// ============ DOWNLOAD HTML ============
+function baixarHtml() {
+  try {
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'central-gestao.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    alert('⬇️ Download do HTML gerado! Salve o arquivo central-gestao.html e suba no GitHub Pages.');
+  } catch(e) {
+    alert('Erro ao gerar HTML: ' + e.message);
+  }
+}
+
+// ============ INIT ============
+render();
+</script>
+</body>
+</html>
